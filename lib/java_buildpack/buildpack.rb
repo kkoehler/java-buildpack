@@ -59,8 +59,8 @@ module JavaBuildpack
       container = component_detection('container', @containers, true).first
       no_container unless container
 
-      component_detection('JRE', @jres, true).first.compile
       component_detection('framework', @frameworks, false).each(&:compile)
+      component_detection('JRE', @jres, true).first.compile
       container.compile
     end
 
@@ -72,9 +72,10 @@ module JavaBuildpack
       container = component_detection('container', @containers, true).first
       no_container unless container
 
+      component_detection('framework', @frameworks, false).map(&:release)
+
       commands = []
       commands << component_detection('JRE', @jres, true).first.release
-      component_detection('framework', @frameworks, false).map(&:release)
       commands << container.release
 
       command = commands.flatten.compact.join(' && ')
